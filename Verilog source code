@@ -1,0 +1,94 @@
+module project_1 (
+    input clk,
+    input rst,
+    input [1:0] in,   // 2'b01 = ₹5, 2'b10 = ₹10
+    input sel,        // 0 = ₹15 product, 1 = ₹20 product
+    output reg out,
+    output reg [1:0] change // 2'b01 = ₹5 change, 2'b10 = ₹10 change
+);
+
+    // State Encoding
+    parameter s0 = 2'b00; // ₹0
+    parameter s1 = 2'b01; // ₹5
+    parameter s2 = 2'b10; // ₹10
+    parameter s3 = 2'b11; // ₹15
+
+    reg [1:0] c_state, n_state;
+
+    // Sequential State Register
+    always @(posedge clk or posedge rst) begin
+        if (rst)
+            c_state <= s0;
+        else
+            c_state <= n_state;
+    end
+
+    // Combinational Next State & Output Logic
+    always @(*) begin
+        // Default assignments to prevent latches
+        n_state = c_state;
+        out = 0;
+        change = 2'b00;
+
+        case (c_state)
+            s0: begin // ₹0 collected
+                if (in == 2'b01)
+                    n_state = s1;
+                else if (in == 2'b10)
+                    n_state = s2;
+            end
+
+            s1: begin // ₹5 collected
+                if (in == 2'b01)
+                    n_state = s2;
+                else if (in == 2'b10)
+                    n_state = s3;
+            end
+
+            s2: begin // ₹10 collected
+                if (in == 2'b01) begin
+                    n_state = s3;
+                end 
+                else if (in == 2'b10) begin // Total = ₹20
+                    if (sel == 1'b0) begin // ₹15 Product selected
+                        out = 1;
+                        change = 2'b01;    // Return ₹5 change
+                        n_state = s0;
+                    end 
+                    else begin             // ₹20 Product selected
+                        out = 1;
+                        change = 2'b00;    // No change
+                        n_state = s0;
+                    end
+                end
+            end
+
+            s3: begin // ₹15 collected
+                if (sel == 1'b0) begin     // ₹15 Product selected immediately
+                    out = 1;
+                    change = 2'b00;
+                    n_state = s0;
+                end 
+                else begin                 // ₹20 Product selected (needs ₹5 more)
+                    if (in == 2'b01) begin // Inserted ₹5 (Total = ₹20)
+                        out = 1;
+                        change = 2'b00;
+                        n_state = s0;
+                    end 
+                    else if (in == 2'b10) begin // Inserted ₹10 (Total = ₹25)
+                        out = 1;
+                        change = 2'b01;    // Return ₹5 change
+                        n_state = s0;
+                    end
+                end
+            end
+
+            default: begin
+                n_state = s0;
+                out = 0;
+                change = 2'b00;
+            end
+        endcase
+    end
+
+endmodule

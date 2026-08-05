@@ -1,24 +1,52 @@
 # FPGA Vending Machine Controller
 
-## Overview
-
-This project implements a vending machine controller using Verilog HDL.
-
-The controller is designed using a Finite State Machine (FSM) and simulates the behavior of a real vending machine by accepting coins, allowing product selection, and dispensing products with change when required.
-
-This project was developed as part of my FPGA-Based System Design coursework.
+An FPGA-based vending machine controller implemented using Verilog HDL and modeled as a Finite State Machine (FSM).
 
 ---
 
 ## Features
 
-- Verilog RTL implementation
-- Finite State Machine (FSM)
-- Supports multiple coin inputs
-- Product selection logic
-- Change dispensing
-- Simulation using ModelSim
-- Designed for FPGA implementation
+- FSM-based controller
+- Two products (₹15 and ₹20)
+- Accepts ₹5 and ₹10 coins
+- Automatic change return
+- RTL Design
+- ModelSim Simulation
+- Quartus Synthesis
+
+---
+
+## Design Assumptions
+
+- Product 1 costs ₹15
+- Product 2 costs ₹20
+- Coins accepted:
+  - ₹5
+  - ₹10
+
+---
+
+## State Diagram
+
+![State Diagram](images/state_diagram.png)
+
+---
+
+## RTL View
+
+![RTL](images/rtl.png)
+
+---
+
+## Technology View
+
+![Technology](images/technology_view.png)
+
+---
+
+## Simulation Waveform
+
+![Waveform](images/waveform.png)
 
 ---
 
@@ -31,51 +59,12 @@ This project was developed as part of my FPGA-Based System Design coursework.
 
 ---
 
-## Project Structure
+## Documentation
 
-```
-├── vending_machine.v
-├── vending_machine_tb.v
-├── README.md
-```
+A detailed project report is available in the `docs` folder.
 
 ---
 
-## Working
+## Author
 
-1. User inserts coins.
-2. FSM updates the current balance.
-3. User selects a product.
-4. If sufficient balance exists:
-   - Product is dispensed.
-   - Remaining change is returned.
-5. Otherwise, the machine waits for additional coins.
-
----
-
-## FSM States
-
-- Idle
-- Coin Input
-- Product Selection
-- Dispense Product
-- Return Change
-
----
-
-## Learning Outcomes
-
-- FSM Design
-- Sequential Logic
-- Verilog RTL Coding
-- Testbench Development
-- FPGA Design Flow
-
----
-
-## Future Improvements
-
-- LCD Display
-- More Products
-- Cancel Transaction
-- Timeout Feature
+Aryan Shah
